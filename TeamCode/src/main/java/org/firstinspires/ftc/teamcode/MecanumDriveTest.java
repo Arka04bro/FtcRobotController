@@ -14,10 +14,10 @@ public class MecanumDriveTest extends OpMode {
     // Метод инициализации тут короче инициализируем моторы
     @Override
     public void init() {
-        leftFront = hardwareMap.get(DcMotor.class, "leftFront");
-        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        leftRear = hardwareMap.get(DcMotor.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotor.class, "rightRear");
+        leftFront = hardwareMap.get(DcMotor.class, "left_front");
+        rightFront = hardwareMap.get(DcMotor.class, "right_front");
+        leftRear = hardwareMap.get(DcMotor.class, "left_rear");
+        rightRear = hardwareMap.get(DcMotor.class, "right_rear");
 
         telemetry.addData("Status", "Initialized");
     }
