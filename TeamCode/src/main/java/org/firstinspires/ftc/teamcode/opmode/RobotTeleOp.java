@@ -84,16 +84,21 @@ public class RobotTeleOp extends CommandOpMode {
     }
 
     private void updateDriver2Controls() {
+        int verticalSlider = 0;
+
         if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
-            sys.intake.setVerticalSliderPosition(-5750);
+            verticalSlider = -4750;
+            sys.intake.setVerticalSliderPosition(verticalSlider);
         } else if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)) {
+            verticalSlider = -2875;
             sys.intake.setVerticalSliderPosition(-2875);
         } else if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_DOWN)) {
+            verticalSlider = -50;
             sys.intake.setVerticalSliderPosition(-50);
         }
 
         // Stop motors when they reach target
-        if (sys.intake.isSliderAtTarget()) {
+        if (sys.intake.getSliderCurrentPosition() <= verticalSlider) {
             sys.intake.stopSliders();
         }
     }

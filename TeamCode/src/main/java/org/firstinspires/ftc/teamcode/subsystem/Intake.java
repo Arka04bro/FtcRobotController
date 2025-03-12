@@ -20,6 +20,8 @@ public class Intake {
                 new Motor(hardwareMap, "LeftVerticalSlider", Motor.GoBILDA.RPM_223),
                 new Motor(hardwareMap, "RightVerticalSlider", Motor.GoBILDA.RPM_223)
         );
+        motorsAccess.leftVerticalSlider.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+//        motorsAccess.rightVerticalSlider.setZeroPowerBehavior(True);
 
         motorsAccess.leftVerticalSlider.resetEncoder();
 //        motorsAccess.rightVerticalSlider.resetEncoder();
@@ -39,12 +41,12 @@ public class Intake {
         motorsAccess.leftVerticalSlider.setRunMode(Motor.RunMode.PositionControl);
 //        motorsAccess.rightVerticalSlider.setRunMode(Motor.RunMode.PositionControl);
 
-        motorsAccess.leftVerticalSlider.set(0.5);
+        motorsAccess.leftVerticalSlider.set(-0.5);
 //        motorsAccess.rightVerticalSlider.set(0.5);
     }
 
-    public boolean isSliderAtTarget() {
-        return motorsAccess.leftVerticalSlider.atTargetPosition();
+    public int getSliderCurrentPosition() {
+        return motorsAccess.leftVerticalSlider.getCurrentPosition();
 //                motorsAccess.rightVerticalSlider.atTargetPosition();
     }
 
