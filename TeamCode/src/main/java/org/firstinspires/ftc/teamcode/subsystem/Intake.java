@@ -22,18 +22,34 @@ public class Intake {
         );
 
         motorsAccess.leftVerticalSlider.resetEncoder();
-        motorsAccess.rightVerticalSlider.resetEncoder();
+//        motorsAccess.rightVerticalSlider.resetEncoder();
     }
 
     public double[] getSlidersDistance() {
         return new double[]{
                 motorsAccess.leftVerticalSlider.getDistance(),
-                motorsAccess.rightVerticalSlider.getDistance()
+//                motorsAccess.rightVerticalSlider.getDistance()
         };
     }
 
     public void setVerticalSliderPosition(int position) {
         motorsAccess.leftVerticalSlider.setTargetPosition(position);
-        motorsAccess.rightVerticalSlider.setTargetPosition(position);
+//        motorsAccess.rightVerticalSlider.setTargetPosition(position);
+
+        motorsAccess.leftVerticalSlider.setRunMode(Motor.RunMode.PositionControl);
+//        motorsAccess.rightVerticalSlider.setRunMode(Motor.RunMode.PositionControl);
+
+        motorsAccess.leftVerticalSlider.set(0.5);
+//        motorsAccess.rightVerticalSlider.set(0.5);
+    }
+
+    public boolean isSliderAtTarget() {
+        return motorsAccess.leftVerticalSlider.atTargetPosition();
+//                motorsAccess.rightVerticalSlider.atTargetPosition();
+    }
+
+    public void stopSliders() {
+        motorsAccess.leftVerticalSlider.stopMotor();
+//        motorsAccess.rightVerticalSlider.stopMotor();
     }
 }

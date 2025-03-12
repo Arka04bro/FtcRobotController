@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.opmode.command.CommandDriveTrainBrake;
 import org.firstinspires.ftc.teamcode.opmode.command.CommandRunContinuous;
 import org.firstinspires.ftc.teamcode.subsystem.SubsystemCollection;
 
-/** Основной "Tele-Op" будет использоваться во время соревновательных матчей и тренировок по вождению. */
+/** Основной "Tele-Op" будет использоваться во время соревновательных матчей и тренировок по вождению. **/
 @TeleOp(name = "Robot TeleOp")
 public class RobotTeleOp extends CommandOpMode {
     private SubsystemCollection sys;
@@ -85,12 +85,16 @@ public class RobotTeleOp extends CommandOpMode {
 
     private void updateDriver2Controls() {
         if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
-          sys.intake.setVerticalSliderPosition(-5750);
+            sys.intake.setVerticalSliderPosition(-5750);
         } else if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)) {
             sys.intake.setVerticalSliderPosition(-2875);
         } else if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_DOWN)) {
             sys.intake.setVerticalSliderPosition(-50);
         }
 
+        // Stop motors when they reach target
+        if (sys.intake.isSliderAtTarget()) {
+            sys.intake.stopSliders();
+        }
     }
 }
