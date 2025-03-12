@@ -43,8 +43,8 @@ public class Intake {
 //        motorsAccess.rightVerticalSlider.set(0.5);
     }
 
-    public boolean isSliderAtTarget() {
-        return motorsAccess.leftVerticalSlider.atTargetPosition();
+    public int getSliderCurrentPosition() {
+        return motorsAccess.leftVerticalSlider.getCurrentPosition();
 //                motorsAccess.rightVerticalSlider.atTargetPosition();
     }
 
