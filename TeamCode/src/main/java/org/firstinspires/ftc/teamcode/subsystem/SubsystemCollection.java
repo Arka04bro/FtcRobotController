@@ -8,13 +8,15 @@ public class SubsystemCollection {
     private static SubsystemCollection instance = null;
     private HardwareMap hardwareMap = null;
 
-    // TODO: add intake and release subsystems
+    // TODO: release subsystems
     public final DriveTrain driveTrain;
+    public final Intake intake;
 
 
     private SubsystemCollection(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         driveTrain = new DriveTrain(this.hardwareMap);
+        intake = new Intake(this.hardwareMap);
     }
 
     /**
@@ -38,7 +40,7 @@ public class SubsystemCollection {
         driveTrain.periodic();
     }
 
-    public static void deinit() {
+    public static void deInit() {
         instance = null;
     }
 }

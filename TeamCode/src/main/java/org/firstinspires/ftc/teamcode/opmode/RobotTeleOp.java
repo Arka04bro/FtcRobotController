@@ -18,7 +18,7 @@ public class RobotTeleOp extends CommandOpMode {
 
     @Override
     public void initialize() {
-        SubsystemCollection.deinit();
+        SubsystemCollection.deInit();
         sys = SubsystemCollection.getInstance(hardwareMap);
 
         driver1Gamepad = new GamepadEx(gamepad1);
@@ -28,12 +28,20 @@ public class RobotTeleOp extends CommandOpMode {
         schedule(new CommandRunContinuous(() -> {
             updateDriver1Controls();
             // updateDriver2Controls();
-            // TODO: add telemetry
+            updateTelemetry();
             return false; // Никогда не закончиться
         }));
 
         bindDriver1Buttons();
         // bindDriver2Buttons();
+    }
+
+    private void updateTelemetry() {
+        // TODO: telemetry
+        for (double distance : sys.intake.getSlidersDistance()) {
+            telemetry.addData("Slider Distance: ", distance);
+        }
+        telemetry.update();
     }
 
     private void updateDriver1Controls() {
