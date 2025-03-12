@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystem.SubsystemCollection;
 @TeleOp(name = "Robot TeleOp")
 public class RobotTeleOp extends CommandOpMode {
     private SubsystemCollection sys;
-    private GamepadEx driver1Gamepad; // driver2Gamepad
+    private GamepadEx driver1Gamepad, driver2Gamepad;
 
     @Override
     public void initialize() {
@@ -22,18 +22,18 @@ public class RobotTeleOp extends CommandOpMode {
         sys = SubsystemCollection.getInstance(hardwareMap);
 
         driver1Gamepad = new GamepadEx(gamepad1);
-//        driver2Gamepad = new GamepadEx(gamepad2);
+        driver2Gamepad = new GamepadEx(gamepad2);
 
 
         schedule(new CommandRunContinuous(() -> {
             updateDriver1Controls();
-            // updateDriver2Controls();
+             updateDriver2Controls();
             updateTelemetry();
             return false; // Никогда не закончиться
         }));
 
         bindDriver1Buttons();
-        // bindDriver2Buttons();
+//         bindDriver2Buttons();
     }
 
     private void updateTelemetry() {
@@ -81,5 +81,16 @@ public class RobotTeleOp extends CommandOpMode {
         driver1Gamepad.getGamepadButton(GamepadKeys.Button.X)
                 .whileActiveContinuous(new CommandDriveTrainBrake(true))
                 .whenInactive(new CommandDriveTrainBrake(false));
+    }
+
+    private void updateDriver2Controls() {
+        if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
+          sys.intake.setVerticalSliderPosition(-5750);
+        } else if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)) {
+            sys.intake.setVerticalSliderPosition(-2875);
+        } else if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_DOWN)) {
+            sys.intake.setVerticalSliderPosition(-50);
+        }
+
     }
 }
