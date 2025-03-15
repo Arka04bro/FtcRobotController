@@ -8,14 +8,20 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.lib.Constants;
 import org.firstinspires.ftc.teamcode.opmode.command.CommandDriveTrainBrake;
+import org.firstinspires.ftc.teamcode.opmode.command.CommandMoveSliders;
 import org.firstinspires.ftc.teamcode.opmode.command.CommandRunContinuous;
 import org.firstinspires.ftc.teamcode.subsystem.SubsystemCollection;
 
-/** Основной "Tele-Op" будет использоваться во время соревновательных матчей и тренировок по вождению. **/
+/**
+ * Основной "Tele-Op" будет использоваться во время соревновательных матчей и тренировок по вождению.
+ **/
 @TeleOp(name = "Robot TeleOp")
 public class RobotTeleOp extends CommandOpMode {
     private SubsystemCollection sys;
     private GamepadEx driver1Gamepad, driver2Gamepad;
+
+    private double driveRotationMultiplier = Constants.DriveTrain.DEFAULT_ROTATION_MULTIPLIER;
+    private double driveSpeedMultiplier = Constants.DriveTrain.DEFAULT_SPEED_MULTIPLIER;
 
     @Override
     public void initialize() {
@@ -25,48 +31,53 @@ public class RobotTeleOp extends CommandOpMode {
         driver1Gamepad = new GamepadEx(gamepad1);
         driver2Gamepad = new GamepadEx(gamepad2);
 
+        bindDriver1Buttons();
+        bindDriver2Buttons();
 
         schedule(new CommandRunContinuous(() -> {
             updateDriver1Controls();
-             updateDriver2Controls();
+            updateDriver2Controls();
             updateTelemetry();
             return false; // Никогда не закончиться
         }));
-
-        bindDriver1Buttons();
-//         bindDriver2Buttons();
     }
 
-    private void updateTelemetry() {
-        // TODO: telemetry
-        for (double distance : sys.intake.getSlidersDistance()) {
-            telemetry.addData("Slider Distance: ", distance);
-        }
-        telemetry.update();
+    private void bindDriver1Buttons() {
+        driver1Gamepad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(() -> driveRotationMultiplier = Constants.DriveTrain.MAX_ROTATION_MULTIPLIER);
+        driver1Gamepad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(() -> driveRotationMultiplier = Constants.DriveTrain.MIN_ROTATION_MULTIPLIER);
+
+        driver1Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+                .whenPressed(() -> driveSpeedMultiplier = Constants.DriveTrain.MAX_SPEED_MULTIPLIER);
+        driver1Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+                .whenPressed(() -> driveSpeedMultiplier = Constants.DriveTrain.MID_SPEED_MULTIPLIER);
+        driver1Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+                .whenPressed(() -> driveSpeedMultiplier = Constants.DriveTrain.MIN_SPEED_MULTIPLIER);
+
+        driver1Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
+                .whenPressed(() -> {
+                            driveRotationMultiplier = Constants.DriveTrain.DEFAULT_ROTATION_MULTIPLIER;
+                            driveSpeedMultiplier = Constants.DriveTrain.DEFAULT_SPEED_MULTIPLIER;
+                        }
+                );
+
+        driver1Gamepad.getGamepadButton(GamepadKeys.Button.X)
+                .whileActiveContinuous(new CommandDriveTrainBrake(true))
+                .whenInactive(new CommandDriveTrainBrake(false));
+    }
+
+    private void bindDriver2Buttons() {
+        driver2Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+                .whenPressed(() -> new CommandMoveSliders(Constants.Intake.EXTENDED));
+        driver2Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+                .whenPressed(() -> new CommandMoveSliders(Constants.Intake.SEMI_EXTENDED));
+        driver2Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+                .whenPressed(() -> new CommandMoveSliders(Constants.Intake.RETRACTED));
+
     }
 
     private void updateDriver1Controls() {
-        double driveRotationMultiplier = 1.0, driveSpeedMultiplier = 1.0;
-
-        if (driver1Gamepad.getButton(GamepadKeys.Button.RIGHT_BUMPER)) {
-            driveRotationMultiplier = Constants.DriveTrain.MAX_ROTATION_MULTIPLIER;
-        } else if (driver1Gamepad.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
-            driveRotationMultiplier = Constants.DriveTrain.MIN_ROTATION_MULTIPLIER;
-        }
-
-        if (driver1Gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
-            driveSpeedMultiplier = Constants.DriveTrain.MAX_SPEED_MULTIPLIER;
-        } else if (driver1Gamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)) {
-            driveSpeedMultiplier = Constants.DriveTrain.MID_SPEED_MULTIPLIER;
-        } else if (driver1Gamepad.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-            driveSpeedMultiplier = Constants.DriveTrain.MIN_SPEED_MULTIPLIER;
-        }
-
-        if (driver1Gamepad.getButton(GamepadKeys.Button.DPAD_LEFT)) {
-            driveSpeedMultiplier = Constants.DriveTrain.DEFAULT_ROTATION_MULTIPLIER;
-            driveRotationMultiplier = Constants.DriveTrain.DEFAULT_SPEED_MULTIPLIER;
-        }
-
         double driveX = driver1Gamepad.getLeftX() * driveSpeedMultiplier;
         double driveY = driver1Gamepad.getLeftY() * driveSpeedMultiplier;
 
@@ -78,29 +89,14 @@ public class RobotTeleOp extends CommandOpMode {
         );
     }
 
-    private void bindDriver1Buttons() {
-        driver1Gamepad.getGamepadButton(GamepadKeys.Button.X)
-                .whileActiveContinuous(new CommandDriveTrainBrake(true))
-                .whenInactive(new CommandDriveTrainBrake(false));
-    }
+    private void updateDriver2Controls() {}
 
-    private void updateDriver2Controls() {
-        int verticalSlider = 0;
-
-        if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
-            verticalSlider = Constants.Intake.EXTENDED;
-            sys.intake.setVerticalSliderPosition(verticalSlider);
-        } else if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)) {
-            verticalSlider = Constants.Intake.SEMI_EXTENDED;
-            sys.intake.setVerticalSliderPosition(verticalSlider);
-        } else if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-            verticalSlider = Constants.Intake.RETRACTED;
-            sys.intake.setVerticalSliderPosition(verticalSlider);
+    private void updateTelemetry() {
+        // TODO: telemetry
+        for (int i : sys.intake.getSlidersCurrentPosition()) {
+            double distance = sys.intake.getSlidersCurrentPosition()[i];
+            telemetry.addData("Slider " + i + " Distance", distance);
         }
-
-        // Stop motors when they reach target
-        if (sys.intake.getSliderCurrentPosition() <= verticalSlider) {
-            sys.intake.stopSliders();
-        }
+        telemetry.update();
     }
 }

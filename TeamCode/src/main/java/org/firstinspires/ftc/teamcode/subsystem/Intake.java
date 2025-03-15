@@ -1,57 +1,70 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Intake {
-    private static class MotorsAccess {
-        public Motor leftVerticalSlider, rightVerticalSlider;
+import org.firstinspires.ftc.teamcode.lib.Constants;
 
-        public MotorsAccess(Motor leftVerticalSlider, Motor rightVerticalSlider) {
-            this.leftVerticalSlider = leftVerticalSlider;
-            this.rightVerticalSlider = rightVerticalSlider;
+public class Intake extends SubsystemBase {
+    private static class MotorsAccess {
+        public Motor leftSlider, rightSlider;
+
+        public MotorsAccess(Motor leftSlider, Motor rightSlider) {
+            this.leftSlider = leftSlider;
+            this.rightSlider = rightSlider;
         }
     }
 
     private final MotorsAccess motorsAccess;
 
-    public Intake(HardwareMap hardwareMap){
+    public Intake(HardwareMap hardwareMap) {
         motorsAccess = new MotorsAccess(
-                new Motor(hardwareMap, "LeftVerticalSlider", Motor.GoBILDA.RPM_223),
-                new Motor(hardwareMap, "RightVerticalSlider", Motor.GoBILDA.RPM_223)
+                new Motor(hardwareMap, "LeftSlider", Motor.GoBILDA.RPM_223),
+                new Motor(hardwareMap, "RightSlider", Motor.GoBILDA.RPM_223)
         );
-        motorsAccess.leftVerticalSlider.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-//        motorsAccess.rightVerticalSlider.setZeroPowerBehavior(True);
+        motorsAccess.leftSlider.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorsAccess.rightSlider.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        motorsAccess.leftVerticalSlider.resetEncoder();
-//        motorsAccess.rightVerticalSlider.resetEncoder();
+        motorsAccess.leftSlider.resetEncoder();
+        motorsAccess.rightSlider.resetEncoder();
+
+        motorsAccess.leftSlider.setPositionTolerance(Constants.Intake.TOLERANCE);
+        motorsAccess.rightSlider.setPositionTolerance(Constants.Intake.TOLERANCE);
     }
 
-    public double[] getSlidersDistance() {
-        return new double[]{
-                motorsAccess.leftVerticalSlider.getDistance(),
-//                motorsAccess.rightVerticalSlider.getDistance()
+    public void setSliderPosition(int targetPosition) {
+        motorsAccess.leftSlider.setTargetPosition(targetPosition);
+        motorsAccess.rightSlider.setTargetPosition(targetPosition);
+
+        motorsAccess.leftSlider.setRunMode(Motor.RunMode.PositionControl);
+        motorsAccess.rightSlider.setRunMode(Motor.RunMode.PositionControl);
+
+        if (targetPosition > motorsAccess.leftSlider.getCurrentPosition()) {
+            motorsAccess.leftSlider.set(Constants.Intake.POWER);
+            motorsAccess.rightSlider.set(Constants.Intake.POWER);
+        } else if (targetPosition < motorsAccess.leftSlider.getCurrentPosition()) {
+            motorsAccess.leftSlider.set(-Constants.Intake.POWER);
+            motorsAccess.rightSlider.set(-Constants.Intake.POWER);
+        } else {
+            motorsAccess.leftSlider.set(0);
+            motorsAccess.rightSlider.set(0);
+        }
+    }
+
+    public int[] getSlidersCurrentPosition() {
+        return new int[]{
+                motorsAccess.leftSlider.getCurrentPosition(),
+                motorsAccess.rightSlider.getCurrentPosition()
         };
     }
 
-    public void setVerticalSliderPosition(int position) {
-        motorsAccess.leftVerticalSlider.setTargetPosition(position);
-//        motorsAccess.rightVerticalSlider.setTargetPosition(position);
-
-        motorsAccess.leftVerticalSlider.setRunMode(Motor.RunMode.PositionControl);
-//        motorsAccess.rightVerticalSlider.setRunMode(Motor.RunMode.PositionControl);
-
-        motorsAccess.leftVerticalSlider.set(-0.5);
-//        motorsAccess.rightVerticalSlider.set(0.5);
-    }
-
-    public int getSliderCurrentPosition() {
-        return motorsAccess.leftVerticalSlider.getCurrentPosition();
-//                motorsAccess.rightVerticalSlider.atTargetPosition();
+    public boolean isAtTargetPosition() {
+        return motorsAccess.leftSlider.atTargetPosition();
     }
 
     public void stopSliders() {
-        motorsAccess.leftVerticalSlider.stopMotor();
-//        motorsAccess.rightVerticalSlider.stopMotor();
+        motorsAccess.leftSlider.stopMotor();
+        motorsAccess.rightSlider.stopMotor();
     }
 }
