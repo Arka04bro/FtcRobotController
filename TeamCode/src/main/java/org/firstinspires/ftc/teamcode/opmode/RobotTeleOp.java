@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.lib.Constants;
 import org.firstinspires.ftc.teamcode.opmode.command.CommandDriveTrainBrake;
 import org.firstinspires.ftc.teamcode.opmode.command.CommandRunContinuous;
 import org.firstinspires.ftc.teamcode.subsystem.SubsystemCollection;
@@ -48,22 +49,22 @@ public class RobotTeleOp extends CommandOpMode {
         double driveRotationMultiplier = 1.0, driveSpeedMultiplier = 1.0;
 
         if (driver1Gamepad.getButton(GamepadKeys.Button.RIGHT_BUMPER)) {
-            driveRotationMultiplier = 0.75;
+            driveRotationMultiplier = Constants.DriveTrain.MAX_ROTATION_MULTIPLIER;
         } else if (driver1Gamepad.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
-            driveRotationMultiplier = 0.5;
+            driveRotationMultiplier = Constants.DriveTrain.MIN_ROTATION_MULTIPLIER;
         }
 
         if (driver1Gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
-            driveSpeedMultiplier = 0.75;
+            driveSpeedMultiplier = Constants.DriveTrain.MAX_SPEED_MULTIPLIER;
         } else if (driver1Gamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)) {
-            driveSpeedMultiplier = 0.5;
+            driveSpeedMultiplier = Constants.DriveTrain.MID_SPEED_MULTIPLIER;
         } else if (driver1Gamepad.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-            driveSpeedMultiplier = 0.25;
+            driveSpeedMultiplier = Constants.DriveTrain.MIN_SPEED_MULTIPLIER;
         }
 
         if (driver1Gamepad.getButton(GamepadKeys.Button.DPAD_LEFT)) {
-            driveSpeedMultiplier = 0.65;
-            driveRotationMultiplier = 0.65;
+            driveSpeedMultiplier = Constants.DriveTrain.DEFAULT_ROTATION_MULTIPLIER;
+            driveRotationMultiplier = Constants.DriveTrain.DEFAULT_SPEED_MULTIPLIER;
         }
 
         double driveX = driver1Gamepad.getLeftX() * driveSpeedMultiplier;
@@ -87,14 +88,14 @@ public class RobotTeleOp extends CommandOpMode {
         int verticalSlider = 0;
 
         if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
-            verticalSlider = -4750;
+            verticalSlider = Constants.Intake.EXTENDED;
             sys.intake.setVerticalSliderPosition(verticalSlider);
         } else if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)) {
-            verticalSlider = -2875;
-            sys.intake.setVerticalSliderPosition(-2875);
+            verticalSlider = Constants.Intake.SEMI_EXTENDED;
+            sys.intake.setVerticalSliderPosition(verticalSlider);
         } else if (driver2Gamepad.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-            verticalSlider = -50;
-            sys.intake.setVerticalSliderPosition(-50);
+            verticalSlider = Constants.Intake.RETRACTED;
+            sys.intake.setVerticalSliderPosition(verticalSlider);
         }
 
         // Stop motors when they reach target
