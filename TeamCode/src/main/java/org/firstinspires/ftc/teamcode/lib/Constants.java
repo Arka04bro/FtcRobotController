@@ -6,12 +6,13 @@ import com.acmerobotics.dashboard.config.Config;
 public final class Constants {
     // TODO: Вынести позишины в отдельный метод
     public static final class Intake {
-        public static int EXTENDED = -4750;
-        public static int SEMI_EXTENDED = -2875;
-        public static int RETRACTED = -50;
+        public static int EXTENDED = 1500;
+        public static int SEMI_EXTENDED = 600;
+        public static int RETRACTED = 100;
 
-        public static double POWER = 0.5;
+        public static double POWER = 0.3;
         public static int TOLERANCE = 50;
+        public static double kP = 0.05;
     }
 
     public static final class DriveTrain {
