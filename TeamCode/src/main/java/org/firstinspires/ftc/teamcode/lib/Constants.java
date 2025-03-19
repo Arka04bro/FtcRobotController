@@ -11,7 +11,7 @@ public final class Constants {
         public static int RETRACTED = -50;
 
         public static double POWER = 0.5;
-        public static int TOLERANCE = 20;
+        public static int TOLERANCE = 50;
     }
 
     public static final class DriveTrain {

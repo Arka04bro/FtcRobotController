@@ -63,18 +63,18 @@ public class RobotTeleOp extends CommandOpMode {
                 );
 
         driver1Gamepad.getGamepadButton(GamepadKeys.Button.X)
-                .whileActiveContinuous(new CommandDriveTrainBrake(true))
-                .whenInactive(new CommandDriveTrainBrake(false));
+                .whileActiveContinuous(new CommandDriveTrainBrake(sys.driveTrain, true))
+                .whenInactive(new CommandDriveTrainBrake(sys.driveTrain, false));
     }
 
     private void bindDriver2Buttons() {
         driver2Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-                .whenPressed(() -> new CommandMoveSliders(Constants.Intake.EXTENDED));
+                .whenPressed(() -> schedule(new CommandMoveSliders(sys.intake, Constants.Intake.EXTENDED)));
         driver2Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-                .whenPressed(() -> new CommandMoveSliders(Constants.Intake.SEMI_EXTENDED));
-        driver2Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-                .whenPressed(() -> new CommandMoveSliders(Constants.Intake.RETRACTED));
+                .whenPressed(() -> schedule(new CommandMoveSliders(sys.intake, Constants.Intake.SEMI_EXTENDED)));
 
+        driver2Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+                .whenPressed(() -> schedule(new CommandMoveSliders(sys.intake, Constants.Intake.RETRACTED)));
     }
 
     private void updateDriver1Controls() {
@@ -93,9 +93,9 @@ public class RobotTeleOp extends CommandOpMode {
 
     private void updateTelemetry() {
         // TODO: telemetry
-        for (int i : sys.intake.getSlidersCurrentPosition()) {
-            double distance = sys.intake.getSlidersCurrentPosition()[i];
-            telemetry.addData("Slider " + i + " Distance", distance);
+        int[] sliderPositions = sys.intake.getSlidersCurrentPosition();
+        for (int i = 0; i < sliderPositions.length; i++) {
+            telemetry.addData("Slider " + i + " Distance", sliderPositions[i]);
         }
         telemetry.update();
     }

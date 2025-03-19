@@ -29,6 +29,9 @@ public class Intake extends SubsystemBase {
         motorsAccess.leftSlider.resetEncoder();
         motorsAccess.rightSlider.resetEncoder();
 
+        motorsAccess.leftSlider.setRunMode(Motor.RunMode.PositionControl);
+        motorsAccess.rightSlider.setRunMode(Motor.RunMode.PositionControl);
+
         motorsAccess.leftSlider.setPositionTolerance(Constants.Intake.TOLERANCE);
         motorsAccess.rightSlider.setPositionTolerance(Constants.Intake.TOLERANCE);
     }
@@ -37,19 +40,8 @@ public class Intake extends SubsystemBase {
         motorsAccess.leftSlider.setTargetPosition(targetPosition);
         motorsAccess.rightSlider.setTargetPosition(targetPosition);
 
-        motorsAccess.leftSlider.setRunMode(Motor.RunMode.PositionControl);
-        motorsAccess.rightSlider.setRunMode(Motor.RunMode.PositionControl);
-
-        if (targetPosition > motorsAccess.leftSlider.getCurrentPosition()) {
-            motorsAccess.leftSlider.set(Constants.Intake.POWER);
-            motorsAccess.rightSlider.set(Constants.Intake.POWER);
-        } else if (targetPosition < motorsAccess.leftSlider.getCurrentPosition()) {
-            motorsAccess.leftSlider.set(-Constants.Intake.POWER);
-            motorsAccess.rightSlider.set(-Constants.Intake.POWER);
-        } else {
-            motorsAccess.leftSlider.set(0);
-            motorsAccess.rightSlider.set(0);
-        }
+        motorsAccess.leftSlider.set(Constants.Intake.POWER);
+        motorsAccess.rightSlider.set(Constants.Intake.POWER);
     }
 
     public int[] getSlidersCurrentPosition() {
@@ -60,7 +52,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean isAtTargetPosition() {
-        return motorsAccess.leftSlider.atTargetPosition();
+        return motorsAccess.leftSlider.atTargetPosition() && motorsAccess.rightSlider.atTargetPosition();
     }
 
     public void stopSliders() {

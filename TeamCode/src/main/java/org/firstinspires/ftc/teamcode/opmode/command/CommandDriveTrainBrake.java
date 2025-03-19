@@ -2,19 +2,22 @@ package org.firstinspires.ftc.teamcode.opmode.command;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
+import org.firstinspires.ftc.teamcode.subsystem.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystem.SubsystemCollection;
 
 public class CommandDriveTrainBrake extends CommandBase {
-    private final SubsystemCollection sys;
+    private final DriveTrain driveTrain;
     private final boolean toggle;
 
-    public CommandDriveTrainBrake(boolean toggle) {
-        sys = SubsystemCollection.getInstance(null);
+    public CommandDriveTrainBrake(DriveTrain driveTrain, boolean toggle) {
+        this.driveTrain = driveTrain;
         this.toggle = toggle;
+
+        addRequirements(driveTrain);
     }
 
     public void initialize() {
-        sys.driveTrain.brake(toggle);
+        driveTrain.brake(toggle);
     }
 
     public boolean isFinished() {
