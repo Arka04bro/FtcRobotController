@@ -10,9 +10,11 @@ public final class Constants {
         public static int SEMI_EXTENDED = 600;
         public static int RETRACTED = 100;
 
-        public static double POWER = 0.3;
-        public static int TOLERANCE = 50;
-        public static double kP = 0.05;
+        public static double kP = 0.004;
+        public static double kI = 0;
+        public static double kD = 0.0001;
+        public static double kF = 0.1;
+        public static double TICKS_IN_DEGREE =  20272.08 / 120.0;
     }
 
     public static final class DriveTrain {

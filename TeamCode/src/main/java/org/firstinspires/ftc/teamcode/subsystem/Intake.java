@@ -1,16 +1,20 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.lib.Constants;
 
 public class Intake extends SubsystemBase {
-    private static class MotorsAccess {
-        public Motor leftSlider, rightSlider;
+    private PIDController controller;
+    private int targetPosition = 0;
 
-        public MotorsAccess(Motor leftSlider, Motor rightSlider) {
+    private static class MotorsAccess {
+        public MotorEx leftSlider, rightSlider;
+
+        public MotorsAccess(MotorEx leftSlider, MotorEx rightSlider) {
             this.leftSlider = leftSlider;
             this.rightSlider = rightSlider;
         }
@@ -19,34 +23,30 @@ public class Intake extends SubsystemBase {
     private final MotorsAccess motorsAccess;
 
     public Intake(HardwareMap hardwareMap) {
+        controller = new PIDController(Constants.Intake.kP, Constants.Intake.kI, Constants.Intake.kD);
         motorsAccess = new MotorsAccess(
-                new Motor(hardwareMap, "LeftSlider", Motor.GoBILDA.RPM_223),
-                new Motor(hardwareMap, "RightSlider", Motor.GoBILDA.RPM_223)
+                new MotorEx(hardwareMap, "LeftSlider", MotorEx.GoBILDA.RPM_223),
+                new MotorEx(hardwareMap, "RightSlider", MotorEx.GoBILDA.RPM_223)
         );
-        motorsAccess.leftSlider.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        motorsAccess.leftSlider.resetEncoder();
-
-        motorsAccess.leftSlider.setRunMode(Motor.RunMode.PositionControl);
-        motorsAccess.leftSlider.setPositionTolerance(Constants.Intake.TOLERANCE);
-        motorsAccess.leftSlider.setPositionCoefficient(Constants.Intake.kP);
     }
 
     public void setSliderPosition(int targetPosition) {
-        motorsAccess.leftSlider.setTargetPosition(targetPosition);
-        motorsAccess.leftSlider.set(Constants.Intake.POWER);
+        this.targetPosition = targetPosition;
+        controller.reset();
+    }
+
+    @Override
+    public void periodic() {
+        int currentPosition = motorsAccess.leftSlider.getCurrentPosition();
+        controller.setPID(Constants.Intake.kP, Constants.Intake.kI, Constants.Intake.kD);
+        double pidOutput = controller.calculate(currentPosition, targetPosition);
+        double ff = Math.cos(Math.toRadians(targetPosition / Constants.Intake.TICKS_IN_DEGREE)) * Constants.Intake.kF;
+        double power = pidOutput + ff;
+
+        motorsAccess.leftSlider.set(power);
     }
 
     public int[] getSlidersCurrentPosition() {
-        return new int[]{
-                motorsAccess.leftSlider.getCurrentPosition(),
-        };
-    }
-
-    public boolean isAtTargetPosition() {
-        return motorsAccess.leftSlider.atTargetPosition();
-    }
-
-    public void stopSliders() {
-        motorsAccess.leftSlider.stopMotor();
+        return new int[]{motorsAccess.leftSlider.getCurrentPosition(), motorsAccess.rightSlider.getCurrentPosition()};
     }
 }

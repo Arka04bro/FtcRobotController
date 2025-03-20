@@ -20,11 +20,6 @@ public class CommandMoveSliders extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return intake.isAtTargetPosition();
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        intake.stopSliders();
+        return true;
     }
 }
