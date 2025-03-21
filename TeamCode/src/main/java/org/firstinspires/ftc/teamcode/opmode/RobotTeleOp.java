@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
-
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -27,6 +28,10 @@ public class RobotTeleOp extends CommandOpMode {
     public void initialize() {
         SubsystemCollection.deInit();
         sys = SubsystemCollection.getInstance(hardwareMap);
+
+        // FTCDashboard
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        FtcDashboard.getInstance().startCameraStream(sys.vision.webcam, 30);
 
         driver1Gamepad = new GamepadEx(gamepad1);
         driver2Gamepad = new GamepadEx(gamepad2);
@@ -89,14 +94,22 @@ public class RobotTeleOp extends CommandOpMode {
         );
     }
 
-    private void updateDriver2Controls() {}
+    private void updateDriver2Controls() {
+    }
 
     private void updateTelemetry() {
         // TODO: telemetry
+        telemetry.addData("something", sys.vision);
         int[] sliderPositions = sys.intake.getSlidersCurrentPosition();
         for (int i = 0; i < sliderPositions.length; i++) {
             telemetry.addData("Slider " + i + " Distance", sliderPositions[i]);
         }
         telemetry.update();
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        sys.vision.webcam.stopStreaming();
     }
 }
