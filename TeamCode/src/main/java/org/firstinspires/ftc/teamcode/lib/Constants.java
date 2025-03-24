@@ -6,9 +6,9 @@ import com.acmerobotics.dashboard.config.Config;
 public final class Constants {
     // TODO: Вынести позишины в отдельный метод
     public static final class Intake {
-        public static int EXTENDED = 1500;
-        public static int SEMI_EXTENDED = 600;
-        public static int RETRACTED = 100;
+        public static int EXTENDED = 6000;
+        public static int SEMI_EXTENDED = 3000;
+        public static int RETRACTED = 0;
 
         public static double kP = 0.004;
         public static double kI = 0;
