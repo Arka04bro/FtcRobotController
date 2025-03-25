@@ -6,8 +6,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.opmode.tester.CAMERA.SampleDetectionPipeline;
-import org.firstinspires.ftc.teamcode.opmode.tester.CAMERA.SampleDetectionTesting;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 public class Camera {
@@ -25,7 +23,7 @@ public class Camera {
 
     private VisionPortal samplePortal;
 
-    private final SampleDetectionProcessor samples;
+    private SampleDetectionProcessor samples;
 
 
     public Camera(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -41,7 +39,7 @@ public class Camera {
 
         builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
 
-        builder.setCameraResolution(new Size(1920,1080));
+        builder.setCameraResolution(new Size(1920, 1080));
 
         builder.addProcessor(samples);
 
@@ -49,65 +47,69 @@ public class Camera {
 
     }
 
-    public void findCameraPos(double shoulderAngle, double extension){
+    public void findCameraPos(double shoulderAngle, double extension) {
         cameraXRobot = CAMERA_OFFSET;
         cameraYRobot = Math.cos(shoulderAngle) * (TUBE_LENGTH + extension) + PIVOT_OFFSET;
-        cameraZRobot = CHASSIS_HEIGHT + ((TUBE_LENGTH+extension) * Math.sin(shoulderAngle));
+        cameraZRobot = CHASSIS_HEIGHT + ((TUBE_LENGTH + extension) * Math.sin(shoulderAngle));
         cameraDistance = Math.hypot(cameraXRobot, cameraYRobot);
     }
 
-    public void findYellowSample(){
+    public void findYellowSample() {
         samples.enableSampleDetection();
         samples.setFilterToYellow();
     }
-    public void findRedSample(){
+
+    public void findRedSample() {
         samples.enableSampleDetection();
         samples.setFilterToRed();
     }
-    public void findBlueSample(){
+
+    public void findBlueSample() {
         samples.enableSampleDetection();
         samples.setFilterToBlue();
     }
 
-    public double getTempX(){
+    public double getTempX() {
         return samples.getFoundSamplePositionX();
     }
-    public double getTempY(){
-        return  samples.getFoundSamplePositionY();
-    }
-    public double getTempYaw(){
-        return  samples.getFoundSamplePositionYaw();
+
+    public double getTempY() {
+        return samples.getFoundSamplePositionY();
     }
 
-    private double getCameraXRobot(){
+    public double getTempYaw() {
+        return samples.getFoundSamplePositionYaw();
+    }
+
+    private double getCameraXRobot() {
         return cameraXRobot;
     }
+
     private double getCameraYRobot() {
         return cameraYRobot;
     }
 
-    private double getCameraZRobot(double shoulderAngle, double extension){
+    private double getCameraZRobot(double shoulderAngle, double extension) {
         return cameraZRobot;
     }
 
-    private double getCameraDistance(){
+    private double getCameraDistance() {
         return cameraDistance;
     }
 
-    private double getCameraYawRobot(){
+    private double getCameraYawRobot() {
         return CAMERA_YAW_ROBOT;
     }
 
-    public void startDetection(){
+    public void startDetection() {
         samples.enableSampleDetection();
     }
-    public void stopDetection(){
+
+    public void stopDetection() {
         samples.disableSampleDetection();
     }
 
-    public boolean didWeFindOne(){
+    public boolean didWeFindOne() {
         return samples.isFoundSample();
     }
-
-
 }

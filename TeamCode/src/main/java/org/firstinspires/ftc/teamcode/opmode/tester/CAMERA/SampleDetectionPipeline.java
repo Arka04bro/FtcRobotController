@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.opmode.tester.CAMERA;
 
 // imports
+
 import android.graphics.Canvas;
 
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
-import org.firstinspires.ftc.vision.VisionPortal;
 import org.opencv.core.Mat;
-import org.openftc.easyopencv.OpenCvPipeline;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
@@ -18,6 +17,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +27,6 @@ import java.util.List;
  * ( the one that is closest to the center of the image)
  */
 public class SampleDetectionPipeline extends SampleDetectionProcessor {
-
-
 
 
 // Thresholding values for Yellow Samples
@@ -59,9 +57,9 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
 // Thresholding values for the Blue Samples
 
     private final double BlueHL = 75;
-    private  final double BlueHH = 141;
+    private final double BlueHH = 141;
     private final double BlueSL = 108;
-    private  final double BlueSH = 255;
+    private final double BlueSH = 255;
 
     private final double BlueVL = 50;
     private final double BlueVH = 255;
@@ -104,7 +102,6 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
     private final double EXTRA_CROPPING_Y = 0;
 
 
-
     // a list of the pixel positions on the cropped frame of all found samples. type of OpenCV Point = (0,0)
     private List<Point> foundSamplePositionsPix = new ArrayList<>();
 
@@ -121,7 +118,8 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
     Mat threshFlipped = new Mat();
 
     Mat threshBGR = new Mat();
-    Mat eroded = new Mat();;
+    Mat eroded = new Mat();
+    ;
     Mat seperationCanny = new Mat();
     Mat dilatedSeperationCanny = new Mat();
     Mat blurredCanny = new Mat();
@@ -144,12 +142,12 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
      * */
 
 
-
     // a boolean used to tell the algorithm whether or not it should be running. when true the algorithm runs, else it does not. only have this true when you need it.
 
 
     /**
      * the contructor of this pipeline
+     *
      * @param telemetry the telemetry instance
      */
     public SampleDetectionPipeline(Telemetry telemetry) {
@@ -183,11 +181,11 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
         foundSample = false;
 
         // checks if we should run the algorithm
-        if (update){
+        if (update) {
             // sets the output image to the output of the main algorithm
             // passes in the input image from OpenCV and the colorMode (0-2) for which color of samples we are looking for
             output = findSamples(input, colorMode);
-        }else{
+        } else {
             // if we should not update, we still need to return something so we just return the input as the output
             output = input;
         }
@@ -209,8 +207,7 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
 
     // like the init function, needed by the OpenCVPipeline... but we don't really use it
     @Override
-    public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext)
-    {
+    public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
 
     }
 
@@ -218,7 +215,7 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
     /**
      * release the data from the Mats we use to help save RAM
      */
-    public void clearMats(){
+    public void clearMats() {
 
         blurred.release();
         threshFlipped.release();
@@ -237,35 +234,34 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
 
     /**
      * The main algorithm
-     *
+     * <p>
      * In here we do a lot of steps:
-     *  correct for the lens distortion
-     *  blur the image
-     *  crop the image down
-     *  convert the color space from RGB to HSV
-     *  Threshhold the image
-     *  flip that result to get a mask
-     *  convert that gray scale masm to to HSV through RGB
-     *  eroded that mask to allow for more detail
-     *  subtract the mask from the cropped image to just get the correct color of pixels
-     *  edge detection to slip all of the samples apart
-     *  dilate those seperation edges
-     *  also subtract those
-     *  finds all of the contours of the seperated samples
-     *  filters through all of the contours
-     *  ensures that the lengths are within the size of a sample are correct
-     *  approximates the contours into only 4 points
-     *  finds the average position of all four corners
-     *  finds the longest side of the sample
-     *  uses that side to find the angle
-     *  chooses the closest sample to the center.
+     * correct for the lens distortion
+     * blur the image
+     * crop the image down
+     * convert the color space from RGB to HSV
+     * Threshhold the image
+     * flip that result to get a mask
+     * convert that gray scale masm to to HSV through RGB
+     * eroded that mask to allow for more detail
+     * subtract the mask from the cropped image to just get the correct color of pixels
+     * edge detection to slip all of the samples apart
+     * dilate those seperation edges
+     * also subtract those
+     * finds all of the contours of the seperated samples
+     * filters through all of the contours
+     * ensures that the lengths are within the size of a sample are correct
+     * approximates the contours into only 4 points
+     * finds the average position of all four corners
+     * finds the longest side of the sample
+     * uses that side to find the angle
+     * chooses the closest sample to the center.
      *
-     *
-     * @param img the input image
+     * @param img  the input image
      * @param mode which color of samples we should find (0-2) yellow, red, blue
      * @return an image of the seperated samples with a green circle around the one we want to use
      */
-    private Mat findSamples(Mat img, int mode){
+    private Mat findSamples(Mat img, int mode) {
 
         // sets the arrays back to empty since the last update
         foundSamplePositionsPix = new ArrayList<>();
@@ -314,12 +310,12 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
         }
 
         // seperates the samples based on the color, different samples needed different tuning
-        if (colorMode == 0){
+        if (colorMode == 0) {
             Imgproc.Canny(baseImage, seperationCanny, CANNY_LOW_Y, CANNY_HIGH_Y);
-        } else if(colorMode ==1){
+        } else if (colorMode == 1) {
             Imgproc.Canny(baseImage, seperationCanny, CANNY_LOW_R, CANNY_HIGH_R);
 
-        } else if(colorMode == 2){
+        } else if (colorMode == 2) {
             Imgproc.Canny(baseImage, seperationCanny, CANNY_LOW_B, CANNY_HIGH_B);
         }
 
@@ -347,7 +343,6 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
         }
 
 
-
         // gets the contours of the samples
         Imgproc.Canny(seperated, outlineCanny, 272, 70);
         Imgproc.GaussianBlur(outlineCanny, outlineBlurred, new Size(3, 3), 3);
@@ -359,7 +354,7 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
 
 
             // converts the contours to listed out contours
-            MatOfPoint2f k  = new MatOfPoint2f(contours.get(i).toArray());
+            MatOfPoint2f k = new MatOfPoint2f(contours.get(i).toArray());
 
             // verifies the length of the contour is valid, else we move on to the next contour in the for loop
             if (Imgproc.arcLength(k, true) < MIN_CONTOUR_LENGTH) {
@@ -402,9 +397,9 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
             List<Integer> positionsY = new ArrayList<>();
 
             // adds these points to the lists
-            for (Point pos : finalApproxContour.toList()){
-                positionsX.add((int)pos.x);
-                positionsY.add((int)pos.y);
+            for (Point pos : finalApproxContour.toList()) {
+                positionsX.add((int) pos.x);
+                positionsY.add((int) pos.y);
                 p++;
             }
 
@@ -413,19 +408,19 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
             int avgY = avgInt(positionsY);
 
             // combines the averages to get the center point
-            Point centorPos = new Point(avgX,avgY);
+            Point centorPos = new Point(avgX, avgY);
 
             // now we check if the contour we have is the first in its position, sometimes there are contours that overlap!
             boolean originalPos = true;
 
-            for(Point s : foundSamplePositionsPix){
-                if (distance(centorPos, s) < MIN_DISTANCE){
+            for (Point s : foundSamplePositionsPix) {
+                if (distance(centorPos, s) < MIN_DISTANCE) {
                     originalPos = false;
                 }
             }
 
             // if the position is original, we final the detection!
-            if (originalPos){
+            if (originalPos) {
                 // adds the found center position to our list of found positions this frame in pixels!
                 foundSamplePositionsPix.add(centorPos);
 
@@ -437,14 +432,14 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
                 Point pos1 = new Point();
                 Point pos2 = new Point();
 
-                for(Point pos : finalApproxContour.toList()){
-                    if (y == 0){
+                for (Point pos : finalApproxContour.toList()) {
+                    if (y == 0) {
                         lastPos = pos;
                         y++;
                         continue;
                     }
                     double dist = distance(pos, lastPos);
-                    if (dist > bestDistance){
+                    if (dist > bestDistance) {
                         bestDistance = dist;
                         bestY = y;
                         pos1 = pos;
@@ -456,10 +451,10 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
                 Point anglePos1 = new Point();
                 Point anglePos2 = new Point();
 
-                if (pos1.x < pos2.x){
+                if (pos1.x < pos2.x) {
                     anglePos1 = pos1;
                     anglePos2 = pos2;
-                }else{
+                } else {
                     anglePos1 = pos2;
                     anglePos2 = pos1;
                 }
@@ -467,7 +462,7 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
                 double difX = anglePos2.x - anglePos1.x;
                 double difY = anglePos2.y - anglePos1.y;
 
-                double sampleAngle = Math.atan2(difX, difY) * (180/Math.PI) - 180;
+                double sampleAngle = Math.atan2(difX, difY) * (180 / Math.PI) - 180;
 
                 double imageCenterX = baseImage.size().width / 2;
                 double imageCenterY = baseImage.size().height / 2;
@@ -481,7 +476,7 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
 
                 // telemetry.addLine(""+ inchPositionX + " : " + inchPositionY);
 
-                Point foundPosition = new Point(inchPositionX,inchPositionY);
+                Point foundPosition = new Point(inchPositionX, inchPositionY);
                 // telemetry.addLine(""+ baseImage.size());
                 foundSamplePositionsInches.add(foundPosition);
                 foundSampleRotations.add(sampleAngle);
@@ -496,18 +491,18 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
         double closestDist = 1000000;
         int bestI = 0;
 
-        for (int i = 0; i < foundSamplePositionsInches.size(); i++){
+        for (int i = 0; i < foundSamplePositionsInches.size(); i++) {
 
             // if we get here then we definitely found a sample!
             foundSample = true;
             // telemetry.addLine(""+ closestDist);
-            if (distance(foundSamplePositionsInches.get(i), new Point(0,0)) < closestDist){
-                closestDist = distance(foundSamplePositionsInches.get(i), new Point(0,0));
+            if (distance(foundSamplePositionsInches.get(i), new Point(0, 0)) < closestDist) {
+                closestDist = distance(foundSamplePositionsInches.get(i), new Point(0, 0));
                 bestI = i;
             }
         }
         Imgproc.cvtColor(baseImage, baseImage, Imgproc.COLOR_HSV2RGB);
-        if (foundSample){
+        if (foundSample) {
             // telemetry.addLine(""+ bestI);
             // telemetry.addLine(""+ foundSamplePositionsInches);
             // telemetry.addLine(""+ foundSampleRotations);
@@ -517,7 +512,7 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
             foundSamplePositionY = foundSamplePositionsInches.get(bestI).y;
             foundSamplePositionYaw = foundSampleRotations.get(bestI);
 
-            Imgproc.circle(baseImage, foundSamplePositionsPix.get(bestI), 25, new Scalar(0,255,0),9);
+            Imgproc.circle(baseImage, foundSamplePositionsPix.get(bestI), 25, new Scalar(0, 255, 0), 9);
 
         }
 
@@ -526,33 +521,34 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
     }
 
 
-    private Mat thresholdImage(Mat src, int mode){
+    private Mat thresholdImage(Mat src, int mode) {
         Scalar lowerBound = null;
         Scalar upperBound = null;
 
-        Mat dst = new Mat();;
+        Mat dst = new Mat();
+        ;
 
-        if (mode == 0){
+        if (mode == 0) {
             // yellow
 
             // create the yellow thresholds
-            lowerBound = new Scalar(YellowHL,YellowSL,YellowVL);
-            upperBound = new Scalar(YellowHH,YellowSH,YellowVH);
+            lowerBound = new Scalar(YellowHL, YellowSL, YellowVL);
+            upperBound = new Scalar(YellowHH, YellowSH, YellowVH);
 
             // threshold the image!
             Core.inRange(src, lowerBound, upperBound, dst);
 
-        }else if(mode == 1){
+        } else if (mode == 1) {
             //red
 
             //since red is the color where the HSV color space wraps around, we need to use two different thresholds to get all red pixels
 
             // create the red thresholds
-            lowerBound = new Scalar(Red1HL,Red1SL,Red1VL);
-            upperBound = new Scalar(Red1HH,Red1SH,Red1VH);
+            lowerBound = new Scalar(Red1HL, Red1SL, Red1VL);
+            upperBound = new Scalar(Red1HH, Red1SH, Red1VH);
 
-            Scalar lowerBound2 = new Scalar(Red2HL,Red2SL,Red2VL);
-            Scalar upperBound2 = new Scalar(Red2HH,Red2SH,Red2VH);
+            Scalar lowerBound2 = new Scalar(Red2HL, Red2SL, Red2VL);
+            Scalar upperBound2 = new Scalar(Red2HH, Red2SH, Red2VH);
             Mat firstRed = new Mat();
             Mat secondRed = new Mat();
 
@@ -561,15 +557,15 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
 
             Core.inRange(src, lowerBound2, upperBound2, secondRed);
 
-            Core.add(firstRed,secondRed,dst);
+            Core.add(firstRed, secondRed, dst);
 
 
-        }else if(mode == 2){
+        } else if (mode == 2) {
             //blue
 
             // create the red thresholds
-            lowerBound = new Scalar(BlueHL,BlueSL,BlueVL);
-            upperBound = new Scalar(BlueHH,BlueSH,BlueVH);
+            lowerBound = new Scalar(BlueHL, BlueSL, BlueVL);
+            upperBound = new Scalar(BlueHH, BlueSH, BlueVH);
 
             // threshold the image!
             Core.inRange(src, lowerBound, upperBound, dst);
@@ -578,7 +574,7 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
         return dst;
     }
 
-    private Mat crop(Mat src){
+    private Mat crop(Mat src) {
         int scaleX = src.cols();
         int scaleY = src.rows();
 
@@ -597,36 +593,37 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
         return cropped;
     }
 
-    private Mat convertColorSpace(Mat src){
-        Mat hsv = new Mat();;
+    private Mat convertColorSpace(Mat src) {
+        Mat hsv = new Mat();
+        ;
         Imgproc.cvtColor(src, hsv, Imgproc.COLOR_RGB2HSV);
         return hsv;
     }
 
-    private Mat undistortImage(Mat src){
-        Mat cameraMatrix = new Mat(3,3,CvType.CV_64F);
+    private Mat undistortImage(Mat src) {
+        Mat cameraMatrix = new Mat(3, 3, CvType.CV_64F);
 
         //These are the values gotten from the camera calibration we did
 
         // assign the values to the matrix... I could not find a better way through the documentation
-        cameraMatrix.put(0,0, 600.01851744);
-        cameraMatrix.put(0,1,0);
-        cameraMatrix.put(0,2, 906.817157357);
-        cameraMatrix.put(1,0,0);
-        cameraMatrix.put(1,1,600.01851744);
-        cameraMatrix.put(1,2,516.73047402);
-        cameraMatrix.put(2,0,0);
-        cameraMatrix.put(2,1,0);
-        cameraMatrix.put(2,2,1);
+        cameraMatrix.put(0, 0, 600.01851744);
+        cameraMatrix.put(0, 1, 0);
+        cameraMatrix.put(0, 2, 906.817157357);
+        cameraMatrix.put(1, 0, 0);
+        cameraMatrix.put(1, 1, 600.01851744);
+        cameraMatrix.put(1, 2, 516.73047402);
+        cameraMatrix.put(2, 0, 0);
+        cameraMatrix.put(2, 1, 0);
+        cameraMatrix.put(2, 2, 1);
 
         // assigning values to the camera distortion coefficients... the only way I know how
-        Mat dist_coeffs = new Mat(1,5,CvType.CV_64F);
+        Mat dist_coeffs = new Mat(1, 5, CvType.CV_64F);
 
-        dist_coeffs.put(0,0,0.0115588983608);
-        dist_coeffs.put(0,1,-0.0313347203804);
-        dist_coeffs.put(0,2,0.00013459478315);
-        dist_coeffs.put(0,3,0.000897741867319);
-        dist_coeffs.put(0,4,0.00542752872672);
+        dist_coeffs.put(0, 0, 0.0115588983608);
+        dist_coeffs.put(0, 1, -0.0313347203804);
+        dist_coeffs.put(0, 2, 0.00013459478315);
+        dist_coeffs.put(0, 3, 0.000897741867319);
+        dist_coeffs.put(0, 4, 0.00542752872672);
 
         // create the destination for the undistorted image
         Mat unDistorted = new Mat();
@@ -636,32 +633,34 @@ public class SampleDetectionPipeline extends SampleDetectionProcessor {
         return unDistorted;
     }
 
-    private Mat rescaleFrame(Mat frame, double scale){
+    private Mat rescaleFrame(Mat frame, double scale) {
         double width = (int) Math.round(frame.cols() * scale);
         double height = (int) Math.round(frame.rows() * scale);
-        Size image_size = new Size(width,height);
-        Mat dst = new Mat();;
+        Size image_size = new Size(width, height);
+        Mat dst = new Mat();
+        ;
         Imgproc.resize(frame, dst, image_size);
         return dst;
     }
 
-    private int avgInt(List<Integer> numbers){
+    private int avgInt(List<Integer> numbers) {
         double count = 0;
         int i = 0;
-        for(int n : numbers){
+        for (int n : numbers) {
             count += n;
             i += 1;
         }
-        if (i != 0){
+        if (i != 0) {
             count /= i;
-            int avg = (int)count;
+            int avg = (int) count;
             return avg;
-        }else{
+        } else {
             return -1;
         }
     }
-    private double distance(Point one, Point two){
-        return Math.sqrt(Math.pow(two.x-one.x,2)+Math.pow(two.y-one.y,2));
+
+    private double distance(Point one, Point two) {
+        return Math.sqrt(Math.pow(two.x - one.x, 2) + Math.pow(two.y - one.y, 2));
     }
 
 }
