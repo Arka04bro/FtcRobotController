@@ -27,11 +27,9 @@ public class RobotTeleOp extends CommandOpMode {
     @Override
     public void initialize() {
         SubsystemCollection.deInit();
-        sys = SubsystemCollection.getInstance(hardwareMap);
-
-        // FTCDashboard
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        FtcDashboard.getInstance().startCameraStream(sys.vision.webcam, 30);
+
+        sys = SubsystemCollection.getInstance(hardwareMap);
 
         driver1Gamepad = new GamepadEx(gamepad1);
         driver2Gamepad = new GamepadEx(gamepad2);
@@ -99,17 +97,10 @@ public class RobotTeleOp extends CommandOpMode {
 
     private void updateTelemetry() {
         // TODO: telemetry
-        telemetry.addData("something", sys.vision);
         int[] sliderPositions = sys.intake.getSlidersCurrentPosition();
         for (int i = 0; i < sliderPositions.length; i++) {
             telemetry.addData("Slider " + i + " Distance", sliderPositions[i]);
         }
         telemetry.update();
-    }
-
-    @Override
-    public void reset() {
-        super.reset();
-        sys.vision.webcam.stopStreaming();
     }
 }

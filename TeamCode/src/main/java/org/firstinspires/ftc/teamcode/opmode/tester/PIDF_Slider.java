@@ -6,9 +6,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
 @Config
@@ -32,7 +30,6 @@ public class PIDF_Slider extends OpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         slider_motor = hardwareMap.get(DcMotorEx.class, "slider_motor0");
-        slider_motor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
@@ -44,7 +41,7 @@ public class PIDF_Slider extends OpMode {
 
         double power = pid + ff;
 
-        slider_motor.setPower(-power);
+        slider_motor.setPower(power);
 
         telemetry.addData("pos ", sliderPos);
         telemetry.addData("target pos ", target);

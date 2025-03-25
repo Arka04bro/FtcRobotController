@@ -11,13 +11,13 @@ public class SubsystemCollection {
     // TODO: release subsystems
     public final DriveTrain driveTrain;
     public final Intake intake;
-    public final Vision vision;
+    public final Claw claw;
 
     private SubsystemCollection(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
-        vision = new Vision(this.hardwareMap);
         driveTrain = new DriveTrain(this.hardwareMap);
         intake = new Intake(this.hardwareMap);
+        claw = new Claw(this.hardwareMap);
     }
 
     /**
