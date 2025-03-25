@@ -12,9 +12,11 @@ public class SubsystemCollection {
     public final DriveTrain driveTrain;
     public final Intake intake;
     public final Claw claw;
+    public final Vision vision;
 
     private SubsystemCollection(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
+        vision = new Vision(this.hardwareMap);
         driveTrain = new DriveTrain(this.hardwareMap);
         intake = new Intake(this.hardwareMap);
         claw = new Claw(this.hardwareMap);

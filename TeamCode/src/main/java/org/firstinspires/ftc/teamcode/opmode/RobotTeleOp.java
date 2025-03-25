@@ -103,4 +103,10 @@ public class RobotTeleOp extends CommandOpMode {
         }
         telemetry.update();
     }
+
+    @Override
+    public void reset() {
+        super.reset();
+        sys.vision.webcam.stopStreaming();
+    }
 }
