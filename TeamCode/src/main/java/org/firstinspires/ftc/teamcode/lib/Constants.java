@@ -16,6 +16,11 @@ public final class Constants {
         public static double kF = 0.1;
         public static double TICKS_IN_DEGREE =  20272.08 / 120.0;
     }
+    public static final class Claw {
+        public static double UP = 1;
+
+        public static double DOWN = 0;
+    }
 
     public static final class DriveTrain {
         public static final double MAX_ROTATION_MULTIPLIER = 0.75;

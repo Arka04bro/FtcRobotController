@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.lib.Constants;
+import org.firstinspires.ftc.teamcode.opmode.command.CommandClawControl;
 import org.firstinspires.ftc.teamcode.opmode.command.CommandDriveTrainBrake;
 import org.firstinspires.ftc.teamcode.opmode.command.CommandMoveSliders;
 import org.firstinspires.ftc.teamcode.opmode.command.CommandRunContinuous;
@@ -78,6 +79,8 @@ public class RobotTeleOp extends CommandOpMode {
 
         driver2Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
                 .whenPressed(() -> schedule(new CommandMoveSliders(sys.intake, Constants.Intake.RETRACTED)));
+        driver2Gamepad.getGamepadButton(GamepadKeys.Button.A)
+                .whenPressed(()-> schedule(new CommandClawControl(sys.claw, Constants.Claw.UP)));
     }
 
     private void updateDriver1Controls() {
