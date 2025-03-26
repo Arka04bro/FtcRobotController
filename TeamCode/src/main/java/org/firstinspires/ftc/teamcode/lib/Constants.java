@@ -18,8 +18,6 @@ public final class Constants {
     }
     public static final class Claw {
         public static double UP = 1;
-
-        public static double DOWN = 0;
     }
 
     public static final class DriveTrain {
