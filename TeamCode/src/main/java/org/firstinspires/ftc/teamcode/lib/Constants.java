@@ -5,6 +5,15 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public final class Constants {
     // TODO: Вынести позишины в отдельный метод
+    public static final class Vision {
+        public static int MIN_CONTOUR_LENGTH = 290;
+        public static int MAX_CONTOUR_LENGTH = 675;
+
+        // Note: IDK what is MIN_DISTANCE
+        public static double MIN_DISTANCE = 65;
+        public static double PIX2INCHES = 0.015;
+    }
+
     public static final class Intake {
         public static int EXTENDED = 6000;
         public static int SEMI_EXTENDED = 3000;
@@ -14,7 +23,7 @@ public final class Constants {
         public static double kI = 0;
         public static double kD = 0.0001;
         public static double kF = 0.1;
-        public static double TICKS_IN_DEGREE =  20272.08 / 120.0;
+        public static double TICKS_IN_DEGREE = 20272.08 / 120.0;
     }
 
     public static final class DriveTrain {
