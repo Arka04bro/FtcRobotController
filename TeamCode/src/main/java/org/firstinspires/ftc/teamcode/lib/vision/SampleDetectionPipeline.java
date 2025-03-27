@@ -22,22 +22,26 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
     private final double YellowVL = 186;
     private final double YellowVH = 255;
 
-// Thresholding values for the Red Samples
-    private final double Red1HL = 160;
+    // Thresholding values for the Red Samples
+    /*            HSV      H    S    V
+     *          'red1': [[180, 255, 255], [159, 50, 70]],
+     *          'red2': [[9, 255, 255], [0, 50, 70]],
+     * */
+    private final double Red1HL = 159;
     private final double Red1HH = 180;
-    private final double Red1SL = 60;
+    private final double Red1SL = 50;
     private final double Red1SH = 255;
-    private final double Red1VL = 147;
+    private final double Red1VL = 70;
     private final double Red1VH = 255;
 
     private final double Red2HL = 0;
-    private final double Red2HH = 8;
-    private final double Red2SL = 60;
+    private final double Red2HH = 9;
+    private final double Red2SL = 50;
     private final double Red2SH = 255;
-    private final double Red2VL = 147;
+    private final double Red2VL = 70;
     private final double Red2VH = 255;
 
-// Thresholding values for the Blue Samples
+    // Thresholding values for the Blue Samples
     private final double BlueHL = 75;
     private final double BlueHH = 141;
     private final double BlueSL = 108;
@@ -80,9 +84,11 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
 
         Sample bestSample = findLargestContour(contours, input);
 
+        // Display data around bestSample
         if (bestSample != null) {
             Imgproc.putText(input, "Angle: " + bestSample.getRotation(), new Point(50, 50),
                     Imgproc.FONT_HERSHEY_SIMPLEX, 1, new Scalar(0, 255, 0), 2);
+            Imgproc.circle(input, bestSample.getCenterInInches(), 25, new Scalar(0, 255, 0), 9);
         }
 
         return input;
@@ -93,11 +99,24 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
         Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_BGR2HSV);
 
         // TODO: make commands to swap the tracking color
+
+        /*                         HIGH            LOW
+         *            HSV      H    S    V     H    S    V
+         *          'red1': [[180, 255, 255], [159, 50, 70]],
+         *          'red2': [[9, 255, 255],   [0, 50, 70]],
+         */
         Scalar lowerBound = new Scalar(Red1HL, Red1SL, Red1VL);
         Scalar upperBound = new Scalar(Red1HH, Red1SH, Red1VH);
+        Scalar lowerBound2 = new Scalar(Red2HL, Red2SL, Red2VL);
+        Scalar upperBound2 = new Scalar(Red2HH, Red2SH, Red2VH);
+
+        Mat mask1 = new Mat();
+        Mat mask2 = new Mat();
+        Core.inRange(hsvFrame, lowerBound, upperBound, mask1);
+        Core.inRange(hsvFrame, lowerBound2, upperBound2, mask2);
 
         Mat boundMask = new Mat();
-        Core.inRange(hsvFrame, lowerBound, upperBound, boundMask);
+        Core.bitwise_or(mask1, mask2, boundMask);
 
         Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 5));
         Imgproc.morphologyEx(boundMask, boundMask, Imgproc.MORPH_OPEN, kernel);
@@ -198,8 +217,6 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
                 bestIndex = i;
             }
         }
-
-        Imgproc.circle(baseImage, foundSamplePositionsPix.get(bestIndex), 25, new Scalar(0, 255, 0), 9);
 
         return new Sample(foundSamplePositionsInches.get(bestIndex), foundSampleRotations.get(bestIndex));
     }
