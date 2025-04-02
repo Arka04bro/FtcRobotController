@@ -19,7 +19,7 @@ public class PIDF_Slider extends OpMode {
 
     public static int target = 0;
 
-    private static final double ticks_in_degree = 20272.08 / 120.0;
+    private static final double ticks_in_degree = 751.8/360.0; // 2,0883333333
 
     private DcMotorEx slider_motor;
 
