@@ -20,7 +20,8 @@ public class PIDF_Config extends OpMode {
     public static int target = 0;
 
     // For 5203 Series Yellow Jacket Planetary Gear Motor 223 RPM
-    private static final double ticks_in_degree = 751.8/360.0; // 2,0883333333
+    private static final double ticks_in_degree = 751.8 / 360.0; // 2,0883333333 ticks/degree
+    private static final double ticks_in_mm = 751.8 / 120.0; // 6,265 ticks/mm
 
     private DcMotorEx motorEx;
 
@@ -35,15 +36,15 @@ public class PIDF_Config extends OpMode {
     @Override
     public void loop() {
         controller.setPID(p, i, d);
-        int sliderPos = motorEx.getCurrentPosition();
-        double pid = controller.calculate(sliderPos, target);
-        double ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
+        int currentPos = motorEx.getCurrentPosition();
+        double pid = controller.calculate(currentPos, target);
+        double ff = Math.cos(Math.toRadians(target / ticks_in_mm)) * f;
 
         double power = pid + ff;
 
         motorEx.setPower(power);
 
-        telemetry.addData("pos ", sliderPos);
+        telemetry.addData("pos ", currentPos);
         telemetry.addData("target pos ", target);
         telemetry.update();
     }
