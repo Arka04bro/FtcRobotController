@@ -82,6 +82,8 @@ public class RobotTeleOp extends CommandOpMode {
                 .whenPressed(() -> schedule(new CommandMoveSliders(sys.intake, Constants.Intake.RETRACTED)));
         driver2Gamepad.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(()-> schedule(new CommandClawControl(sys.claw, Constants.Claw.UP)));
+        driver2Gamepad.getGamepadButton(GamepadKeys.Button.B)
+                        .whenPressed(()->schedule(new CommandClawControl(sys.claw,Constants.Claw.DOWN)));
         driver2Gamepad.getGamepadButton(GamepadKeys.Button.X)
                 .whenPressed(()-> schedule(new CommandClawTake(sys.claw,Constants.Claw.INPUT)));
     }
@@ -107,6 +109,11 @@ public class RobotTeleOp extends CommandOpMode {
         for (int i = 0; i < sliderPositions.length; i++) {
             telemetry.addData("Slider " + i + " Distance", sliderPositions[i]);
         }
+        double[] drivetrainPower = sys.driveTrain.getMotorsInfo();
+        for (int i = 0; i< drivetrainPower.length; i++) {
+            telemetry.addData("Motor " + i + " Power", drivetrainPower[i]);
+        }
+        telemetry.addData("servo1_pos:",sys.claw.GetClawPos());
         telemetry.update();
     }
 

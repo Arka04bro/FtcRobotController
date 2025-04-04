@@ -26,8 +26,8 @@ public final class Constants {
         public static double TICKS_IN_DEGREE = 20272.08 / 120.0;
     }
     public static final class Claw {
-        public static double UP = 90;
-        public static double DOWN = -90;
+        public static double UP = 135;
+        public static double DOWN = -135;
         public static double INPUT = 1;
         public static double OUTPUT = -1;
     }

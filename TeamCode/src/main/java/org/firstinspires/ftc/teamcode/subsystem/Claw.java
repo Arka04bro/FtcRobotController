@@ -32,11 +32,15 @@ public class Claw extends SubsystemBase {
                 new CRServo(hardwareMap,"ServoRight")
         );
         servoAccess.servoRight.setInverted(true);
+        servoAccess.servoClaw.setPosition(0.5);
     }
 
     public void ClawControl(double output) {
         servoAccess.servoLeft.set(output);
         servoAccess.servoRight.set(output);
+    }
+    public int GetClawPos(){
+        return (int) servoAccess.servoClaw.getAngle();
     }
 
     public void setClawAngle(double angle) {
