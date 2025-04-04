@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.lib.Constants;
 import org.firstinspires.ftc.teamcode.lib.vision.SampleDetectionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -12,8 +13,6 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 public class Vision extends SubsystemBase {
     public OpenCvCamera webcam;
-    private static final int CAMERA_WIDTH = 640;
-    private static final int CAMERA_HEIGHT = 360;
 
     public Vision(HardwareMap hardwareMap) {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
@@ -21,11 +20,21 @@ public class Vision extends SubsystemBase {
         );
         webcam = OpenCvCameraFactory.getInstance().createWebcam(
                 hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
-        webcam.setPipeline(new SampleDetectionPipeline());
 
-        webcam.openCameraDevice();
-        webcam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
+        webcam.openCameraDeviceAsync(
+                new OpenCvCamera.AsyncCameraOpenListener() {
+                    @Override
+                    public void onOpened() {
+                        webcam.setPipeline(new SampleDetectionPipeline());
+                        webcam.startStreaming(Constants.Vision.CAMERA_WIDTH, Constants.Vision.CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
 
-        FtcDashboard.getInstance().startCameraStream(webcam, 30);
+                        FtcDashboard.getInstance().startCameraStream(webcam, 30);
+                    }
+
+                    @Override
+                    public void onError(int errorCode) {
+                    }
+                }
+        );
     }
 }
