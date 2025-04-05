@@ -28,8 +28,8 @@ public class Slider extends SubsystemBase {
                 new MotorEx(hardwareMap, "LeftSlider", MotorEx.GoBILDA.RPM_223),
                 new MotorEx(hardwareMap, "RightSlider", MotorEx.GoBILDA.RPM_223)
         );
-        motorsAccess.leftSlider.resetEncoder();
-        motorsAccess.rightSlider.resetEncoder();
+        motorsAccess.leftSlider.encoder.reset();
+        motorsAccess.rightSlider.encoder.reset();
     }
 
     public void setSliderPosition(int targetPosition) {
@@ -46,7 +46,7 @@ public class Slider extends SubsystemBase {
         double power = pidOutput + ff;
 
         motorsAccess.leftSlider.motorEx.setPower(power);
-        motorsAccess.rightSlider.motorEx.setPower(power);
+        motorsAccess.rightSlider.motorEx.setPower(-power);
     }
 
     public int[] getSlidersCurrentPosition() {

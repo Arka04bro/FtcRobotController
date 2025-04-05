@@ -29,13 +29,12 @@ public class DriveTrain extends SubsystemBase {
         );
 
         mecanumDrive = new MecanumDrive(
-                false,
+                true,
                 motorsAccess.frontLeft,
                 motorsAccess.frontRight,
                 motorsAccess.backLeft,
                 motorsAccess.backRight
         );
-        motorsAccess.frontLeft.setInverted(true);
     }
 
     public void brake(boolean toggle) {

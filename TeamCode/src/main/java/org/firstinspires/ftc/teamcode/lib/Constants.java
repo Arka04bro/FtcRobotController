@@ -18,7 +18,7 @@ public final class Constants {
     // TODO: Test and rewrite Position and PIDF values
     public static final class Intake {
         public static final class Slider {
-            public static int HIGH_BASKET = 0;
+            public static int HIGH_BASKET = 3500;
             public static int LOW_BASKET = 0;
             public static int HIGH_CHAMBER = 0;
             public static int LOW_CHAMBER = 0;

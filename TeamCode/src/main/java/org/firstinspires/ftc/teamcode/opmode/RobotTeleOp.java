@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.opmode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -7,7 +8,6 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.lib.Constants;
 import org.firstinspires.ftc.teamcode.opmode.command.CommandDriveTrainBrake;
@@ -22,7 +22,6 @@ import org.firstinspires.ftc.teamcode.subsystem.SubsystemCollection;
 @TeleOp(name = "Robot TeleOp")
 public class RobotTeleOp extends CommandOpMode {
     private SubsystemCollection sys;
-    private VoltageSensor batterySensor;
 
     private GamepadEx driver1Gamepad, driver2Gamepad;
 
@@ -32,7 +31,6 @@ public class RobotTeleOp extends CommandOpMode {
     public void initialize() {
         SubsystemCollection.deInit();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        batterySensor = hardwareMap.voltageSensor.iterator().next();
 
         sys = SubsystemCollection.getInstance(hardwareMap);
 
@@ -167,13 +165,12 @@ public class RobotTeleOp extends CommandOpMode {
     }
 
     private void updateTelemetry() {
-        telemetry.addLine("Robot Info\n")
-                .addData("Battery Voltage", batterySensor.getVoltage());
+        telemetry.addLine("Robot Info");
 
-        telemetry.addLine("Drivetrain info")
-                .addData("Speed Multiplier", driveSpeedMultiplier);
+        telemetry.addLine("Drivetrain info");
+        telemetry.addData("Speed Multiplier", driveSpeedMultiplier);
 
-        telemetry.addLine("\nIntake info");
+        telemetry.addLine("Intake info");
         int[] sliderPositions = sys.slider.getSlidersCurrentPosition();
         for (int i = 0; i < sliderPositions.length; i++) {
             telemetry.addData("Slider " + i + " Pos", sliderPositions[i]);
@@ -189,3 +186,4 @@ public class RobotTeleOp extends CommandOpMode {
         sys.vision.webcam.stopStreaming();
     }
 }
+
