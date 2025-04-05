@@ -1,14 +1,18 @@
-
 package org.firstinspires.ftc.teamcode.opmode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.ftc.LazyImu;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.lib.Constants;
 import org.firstinspires.ftc.teamcode.opmode.command.CommandDriveTrainBrake;
 import org.firstinspires.ftc.teamcode.opmode.command.CommandMoveSliders;
@@ -22,9 +26,10 @@ import org.firstinspires.ftc.teamcode.subsystem.SubsystemCollection;
 @TeleOp(name = "Robot TeleOp")
 public class RobotTeleOp extends CommandOpMode {
     private SubsystemCollection sys;
+    private IMU imu;
+    YawPitchRollAngles robotOrientation;
 
     private GamepadEx driver1Gamepad, driver2Gamepad;
-
     private double driveSpeedMultiplier = Constants.DriveTrain.MAX_SPEED_MULTIPLIER;
 
     @Override
@@ -33,6 +38,15 @@ public class RobotTeleOp extends CommandOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         sys = SubsystemCollection.getInstance(hardwareMap);
+
+        // NOTE: Maybe i need to put it into subsystem idk
+        LazyImu lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+        ));
+        imu = lazyImu.get();
+        imu.resetYaw();
+        robotOrientation = imu.getRobotYawPitchRollAngles();
 
         driver1Gamepad = new GamepadEx(gamepad1);
         driver2Gamepad = new GamepadEx(gamepad2);
@@ -153,10 +167,11 @@ public class RobotTeleOp extends CommandOpMode {
     }
 
     private void updateDriver1Controls() {
-        sys.driveTrain.mecanumDrive.driveRobotCentric(
+        sys.driveTrain.mecanumDrive.driveFieldCentric(
                 driver1Gamepad.getLeftX() * driveSpeedMultiplier,
                 driver1Gamepad.getLeftY() * driveSpeedMultiplier,
                 driver1Gamepad.getRightX() * driveSpeedMultiplier,
+                robotOrientation.getYaw(AngleUnit.DEGREES),
                 true
         );
     }
@@ -169,6 +184,15 @@ public class RobotTeleOp extends CommandOpMode {
 
         telemetry.addLine("Drivetrain info");
         telemetry.addData("Speed Multiplier", driveSpeedMultiplier);
+
+        telemetry.addData("Robot Rotation", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        telemetry.addData("Robot Y", imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
+        telemetry.addData("Robot X", imu.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
+
+        telemetry.addData("FrontLeft", hardwareMap.voltageSensor.get("FrontLeft").getVoltage());
+        telemetry.addData("FrontRight", hardwareMap.voltageSensor.get("FrontRight").getVoltage());
+        telemetry.addData("BackLeft", hardwareMap.voltageSensor.get("BackLeft").getVoltage());
+        telemetry.addData("BackRight", hardwareMap.voltageSensor.get("BackRight").getVoltage());
 
         telemetry.addLine("Intake info");
         int[] sliderPositions = sys.slider.getSlidersCurrentPosition();
@@ -186,4 +210,3 @@ public class RobotTeleOp extends CommandOpMode {
         sys.vision.webcam.stopStreaming();
     }
 }
-
