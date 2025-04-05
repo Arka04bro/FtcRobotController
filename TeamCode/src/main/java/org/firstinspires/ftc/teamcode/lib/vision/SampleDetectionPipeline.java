@@ -22,11 +22,6 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
     private final double YellowVL = 186;
     private final double YellowVH = 255;
 
-    // Thresholding values for the Red Samples
-    /*            HSV      H    S    V
-     *          'red1': [[180, 255, 255], [159, 50, 70]],
-     *          'red2': [[9, 255, 255], [0, 50, 70]],
-     * */
     private final double Red1HL = 159;
     private final double Red1HH = 180;
     private final double Red1SL = 50;
@@ -41,12 +36,10 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
     private final double Red2VL = 70;
     private final double Red2VH = 255;
 
-    // Thresholding values for the Blue Samples
     private final double BlueHL = 75;
     private final double BlueHH = 141;
     private final double BlueSL = 108;
     private final double BlueSH = 255;
-
     private final double BlueVL = 50;
     private final double BlueVH = 255;
 

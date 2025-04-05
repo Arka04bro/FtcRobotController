@@ -109,8 +109,6 @@ public class SampleDetectionPipelineConfigure extends OpenCvPipeline {
             Imgproc.circle(input, bestSample.getCenterInInches(), 25, new Scalar(0, 255, 0), 9);
         }
 
-        releaseResources();
-
         return showMask ? mask : input;
     }
 
@@ -209,20 +207,5 @@ public class SampleDetectionPipelineConfigure extends OpenCvPipeline {
 
     private double distance(Point one, Point two) {
         return Math.hypot(two.x - one.x, two.y - one.y);
-    }
-
-    public void releaseResources() {
-        hsvFrame.release();
-        boundMask.release();
-        kernel.release();
-        hierarchy.release();
-        mask1.release();
-        mask2.release();
-        contours.clear();
-        foundSamplePositionsPix.clear();
-        foundSamplePositionsInches.clear();
-        foundSampleRotations.clear();
-        contour2f.release();
-        approxContour2f.release();
     }
 }

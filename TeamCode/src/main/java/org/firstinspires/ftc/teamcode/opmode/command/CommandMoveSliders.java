@@ -1,21 +1,23 @@
 package org.firstinspires.ftc.teamcode.opmode.command;
 
-import org.firstinspires.ftc.teamcode.subsystem.Intake;
+import org.firstinspires.ftc.teamcode.subsystem.Slider;
+
 import com.arcrobotics.ftclib.command.CommandBase;
 
 public class CommandMoveSliders extends CommandBase {
-    private final Intake intake;
+    private final Slider slider;
     private final int targetPosition;
 
-    public CommandMoveSliders(Intake intake, int targetPosition) {
-        this.intake = intake;
+    public CommandMoveSliders(Slider slider, int targetPosition) {
+        this.slider = slider;
         this.targetPosition = targetPosition;
-        addRequirements(intake);
+
+        addRequirements(slider);
     }
 
     @Override
     public void initialize() {
-        intake.setSliderPosition(targetPosition);
+        slider.setSliderPosition(targetPosition);
     }
 
     @Override

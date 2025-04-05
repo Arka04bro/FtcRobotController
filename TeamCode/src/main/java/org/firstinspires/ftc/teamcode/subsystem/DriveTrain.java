@@ -37,15 +37,6 @@ public class DriveTrain extends SubsystemBase {
         );
         motorsAccess.frontLeft.setInverted(true);
     }
-    public double[] getMotorsInfo() {
-        return new double[]
-                {
-                        motorsAccess.frontLeft.motor.getPower(),
-                        motorsAccess.frontRight.motor.getPower(),
-                        motorsAccess.backLeft.motor.getPower(),
-                        motorsAccess.backRight.motor.getPower(),
-                };
-    }
 
     public void brake(boolean toggle) {
         Motor.ZeroPowerBehavior behavior = toggle ? Motor.ZeroPowerBehavior.BRAKE : Motor.ZeroPowerBehavior.FLOAT;

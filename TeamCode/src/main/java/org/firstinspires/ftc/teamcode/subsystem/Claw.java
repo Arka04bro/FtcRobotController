@@ -9,14 +9,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Claw extends SubsystemBase {
+    // TODO: Move to constants
     private static final double minAngle = -135;
     private static final double maxAngle = 135;
-    
+
     private static class ServoAccess {
         public ServoEx servoClaw;
-        public CRServo servoLeft,servoRight;
+        public CRServo servoLeft, servoRight;
 
-        public ServoAccess(ServoEx servoClaw,CRServo servoLeft,CRServo servoRight) {
+        public ServoAccess(ServoEx servoClaw, CRServo servoLeft, CRServo servoRight) {
             this.servoClaw = servoClaw;
             this.servoLeft = servoLeft;
             this.servoRight = servoRight;
@@ -28,19 +29,15 @@ public class Claw extends SubsystemBase {
     public Claw(HardwareMap hardwareMap) {
         servoAccess = new ServoAccess(
                 new SimpleServo(hardwareMap, "ServoClaw", minAngle, maxAngle, AngleUnit.DEGREES),
-                new CRServo(hardwareMap,"servoLeft"),
-                new CRServo(hardwareMap,"ServoRight")
+                new CRServo(hardwareMap, "ServoLeft"),
+                new CRServo(hardwareMap, "ServoRight")
         );
         servoAccess.servoRight.setInverted(true);
-        servoAccess.servoClaw.setPosition(0.5);
     }
 
-    public void ClawControl(double output) {
-        servoAccess.servoLeft.set(output);
-        servoAccess.servoRight.set(output);
-    }
-    public int GetClawPos(){
-        return (int) servoAccess.servoClaw.getAngle();
+    public void clawControl(double power) {
+        servoAccess.servoLeft.set(power);
+        servoAccess.servoRight.set(power);
     }
 
     public void setClawAngle(double angle) {

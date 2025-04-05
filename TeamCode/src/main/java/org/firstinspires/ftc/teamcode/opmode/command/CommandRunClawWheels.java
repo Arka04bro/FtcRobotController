@@ -4,20 +4,24 @@ import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystem.Claw;
 
-public class CommandClawTake extends CommandBase {
+public class CommandRunClawWheels extends CommandBase {
     private final Claw claw;
-    private final double output;
-    public CommandClawTake(Claw claw,double output){
+    private final double power;
+
+    public CommandRunClawWheels(Claw claw, double power) {
         this.claw = claw;
-        this.output = output;
+        this.power = power;
+
         addRequirements(claw);
     }
+
     @Override
-    public void initialize(){
-        claw.ClawControl(output);
+    public void initialize() {
+        claw.clawControl(power);
     }
+
     @Override
-    public boolean isFinished(){
+    public boolean isFinished() {
         return true;
     }
 }

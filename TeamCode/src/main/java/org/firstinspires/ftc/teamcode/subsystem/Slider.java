@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.lib.Constants;
 
-public class Intake extends SubsystemBase {
+public class Slider extends SubsystemBase {
     private PIDController controller;
     private int targetPosition = 0;
 
@@ -22,8 +22,8 @@ public class Intake extends SubsystemBase {
 
     private final MotorsAccess motorsAccess;
 
-    public Intake(HardwareMap hardwareMap) {
-        controller = new PIDController(Constants.Intake.kP, Constants.Intake.kI, Constants.Intake.kD);
+    public Slider(HardwareMap hardwareMap) {
+        controller = new PIDController(Constants.Intake.Slider.kP, Constants.Intake.Slider.kI, Constants.Intake.Slider.kD);
         motorsAccess = new MotorsAccess(
                 new MotorEx(hardwareMap, "LeftSlider", MotorEx.GoBILDA.RPM_223),
                 new MotorEx(hardwareMap, "RightSlider", MotorEx.GoBILDA.RPM_223)
@@ -40,9 +40,9 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         int currentPosition = motorsAccess.leftSlider.motorEx.getCurrentPosition();
-        controller.setPID(Constants.Intake.kP, Constants.Intake.kI, Constants.Intake.kD);
+        controller.setPID(Constants.Intake.Slider.kP, Constants.Intake.Slider.kI, Constants.Intake.Slider.kD);
         double pidOutput = controller.calculate(currentPosition, targetPosition);
-        double ff = Math.cos(Math.toRadians(targetPosition / Constants.Intake.TICKS_IN_DEGREE)) * Constants.Intake.kF;
+        double ff = Math.cos(Math.toRadians(targetPosition / Constants.Intake.Slider.TICKS_IN_MM)) * Constants.Intake.Slider.kF;
         double power = pidOutput + ff;
 
         motorsAccess.leftSlider.motorEx.setPower(power);

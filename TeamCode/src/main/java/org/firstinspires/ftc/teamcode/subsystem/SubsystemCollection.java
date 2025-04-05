@@ -8,9 +8,10 @@ public class SubsystemCollection {
     private static SubsystemCollection instance = null;
     private HardwareMap hardwareMap = null;
 
-    // TODO: release subsystems
+    // NOTE: Maybe we need to separate the subsystems
     public final DriveTrain driveTrain;
-    public final Intake intake;
+    public final Slider slider;
+//    public final SliderRotation sliderRotation;
     public final Claw claw;
     public final Vision vision;
 
@@ -18,7 +19,8 @@ public class SubsystemCollection {
         this.hardwareMap = hardwareMap;
         vision = new Vision(this.hardwareMap);
         driveTrain = new DriveTrain(this.hardwareMap);
-        intake = new Intake(this.hardwareMap);
+        slider = new Slider(this.hardwareMap);
+//        sliderRotation = new SliderRotation(this.hardwareMap);
         claw = new Claw(this.hardwareMap);
     }
 
