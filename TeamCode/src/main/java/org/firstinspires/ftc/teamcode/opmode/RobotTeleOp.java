@@ -30,7 +30,9 @@ public class RobotTeleOp extends CommandOpMode {
     YawPitchRollAngles robotOrientation;
 
     private GamepadEx driver1Gamepad, driver2Gamepad;
-    private double driveSpeedMultiplier = Constants.DriveTrain.MAX_SPEED_MULTIPLIER;
+
+    private int currentMultiplierIndex = 2;
+    private double driveSpeedMultiplier = Constants.DriveTrain.SPEED_MULTIPLIERS[currentMultiplierIndex];
 
     @Override
     public void initialize() {
@@ -65,21 +67,29 @@ public class RobotTeleOp extends CommandOpMode {
     /**
      * Бинды для кнопок первого драйвера.
      * <p>
-     * Управление скоростью движения робота:
-     * - Стрелка вверх    — Устанавливает минимальное ограничение скорости.
-     * - Стрелка вправо   — Устанавливает среднее ограничение скорости.
-     * - Стрелка вниз     — Устанавливает максимальное ограничение скорости.
+     * Управление скоростью движения робота (три передачи: 0.25, 0.5, 0.85):
+     * - Правый бампер    — Увеличивает передачу.
+     * - Стрелка вправо   — Уменьшает передачу.
      * <p>
      * Дополнительные функции:
      * - A (удержание) — Делает движение робота резким, предотвращая движение по инерции после отпускания стиков.
      */
     private void bindDriver1Buttons() {
-        driver1Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-                .whenPressed(() -> driveSpeedMultiplier = Constants.DriveTrain.MAX_SPEED_MULTIPLIER);
-        driver1Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-                .whenPressed(() -> driveSpeedMultiplier = Constants.DriveTrain.MID_SPEED_MULTIPLIER);
-        driver1Gamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-                .whenPressed(() -> driveSpeedMultiplier = Constants.DriveTrain.MIN_SPEED_MULTIPLIER);
+        driver1Gamepad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(() -> {
+                    if (currentMultiplierIndex < Constants.DriveTrain.SPEED_MULTIPLIERS.length - 1) {
+                        currentMultiplierIndex++;
+                    }
+                    driveSpeedMultiplier = Constants.DriveTrain.SPEED_MULTIPLIERS[currentMultiplierIndex];
+                });
+
+        driver1Gamepad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(() -> {
+                    if (currentMultiplierIndex > 0) {
+                        currentMultiplierIndex--;
+                    }
+                    driveSpeedMultiplier = Constants.DriveTrain.SPEED_MULTIPLIERS[currentMultiplierIndex];
+                });
 
         driver1Gamepad.getGamepadButton(GamepadKeys.Button.A)
                 .whileActiveOnce(new CommandDriveTrainBrake(sys.driveTrain, true))

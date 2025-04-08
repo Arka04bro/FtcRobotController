@@ -32,7 +32,7 @@ public final class Constants {
             public static double kD = 0.0001;
             public static double kF = 0.08;
 
-            public static double TICKS_IN_MM = 751.8/120.0;
+            public static double TICKS_IN_MM = 751.8 / 120.0;
         }
 
         public static final class SliderRotation {
@@ -50,7 +50,7 @@ public final class Constants {
             public static double kD = 0;
             public static double kF = 0;
 
-            public static double TICKS_IN_DEGREE = 751.8/360.0;
+            public static double TICKS_IN_DEGREE = 751.8 / 360.0;
         }
 
         public static final class Claw {
@@ -66,8 +66,6 @@ public final class Constants {
 
 
     public static final class DriveTrain {
-        public static final double MAX_SPEED_MULTIPLIER = 0.85;
-        public static final double MID_SPEED_MULTIPLIER = 0.5;
-        public static final double MIN_SPEED_MULTIPLIER = 0.25;
+        public static final double[] SPEED_MULTIPLIERS = {0.25, 0.5, 0.85};
     }
 }
