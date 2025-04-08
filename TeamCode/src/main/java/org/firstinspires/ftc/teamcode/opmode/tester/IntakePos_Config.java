@@ -4,14 +4,12 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.arcrobotics.ftclib.hardware.SimpleServo;
+import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @Config
 @TeleOp
@@ -44,7 +42,7 @@ public class IntakePos_Config extends OpMode {
     }
 
     private MotorsAccess motorsAccess;
-    private ServoEx clawAngle;
+    private CRServo clawAngle;
 
     @Override
     public void init() {
@@ -53,15 +51,16 @@ public class IntakePos_Config extends OpMode {
         motorsAccess = new MotorsAccess(
                 new MotorEx(hardwareMap, "LeftSlider", Motor.GoBILDA.RPM_223),
                 new MotorEx(hardwareMap, "RightSlider", Motor.GoBILDA.RPM_223),
-                new MotorEx(hardwareMap, "leftAngle", Motor.GoBILDA.RPM_223),
-                new MotorEx(hardwareMap, "rightAngle", Motor.GoBILDA.RPM_223)
+                new MotorEx(hardwareMap, "LeftAngle", Motor.GoBILDA.RPM_223),
+                new MotorEx(hardwareMap, "RightAngle", Motor.GoBILDA.RPM_223)
         );
-        clawAngle = new SimpleServo(hardwareMap, "ClawAngle", -135, 135, AngleUnit.DEGREES);
+        clawAngle = new CRServo(hardwareMap, "ClawAngle");
 
         motorsAccess.leftSlider.encoder.reset();
         motorsAccess.rightSlider.encoder.reset();
         motorsAccess.leftAngle.encoder.reset();
         motorsAccess.rightAngle.encoder.reset();
+        clawAngle.encoder.reset();
     }
 
     @Override
@@ -100,6 +99,6 @@ public class IntakePos_Config extends OpMode {
         telemetry.addData("Angle ERROR\n", AngleCoefficients.target - anglePos);
 
         telemetry.addLine("Claw INFO");
-        telemetry.addData("Claw POS", clawAngle.getPosition());
+        telemetry.addData("Claw POS", clawAngle.getCurrentPosition());
     }
 }
