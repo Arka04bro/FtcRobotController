@@ -23,35 +23,35 @@ public class SampleDetectionPipelineConfigure extends OpenCvPipeline {
     public static boolean showMask = false;
 
     // Yellow range
-    public static double YellowHL = 12;
-    public static double YellowHH = 61;
-    public static double YellowSL = 119;
+    public static double YellowHL = 20;
+    public static double YellowHH = 30;
+    public static double YellowSL = 100;
     public static double YellowSH = 255;
-    public static double YellowVL = 186;
+    public static double YellowVL = 100;
     public static double YellowVH = 255;
 
     // Red low range
-    public static double Red1HL = 159;
-    public static double Red1HH = 180;
-    public static double Red1SL = 50;
+    public static double Red1HL = 0;
+    public static double Red1HH = 10;
+    public static double Red1SL = 120;
     public static double Red1SH = 255;
     public static double Red1VL = 70;
     public static double Red1VH = 255;
 
     // Red high range
-    public static double Red2HL = 0;
-    public static double Red2HH = 9;
-    public static double Red2SL = 50;
+    public static double Red2HL = 170;
+    public static double Red2HH = 180;
+    public static double Red2SL = 120;
     public static double Red2SH = 255;
     public static double Red2VL = 70;
     public static double Red2VH = 255;
 
     // Blue range
-    public static double BlueHL = 75;
-    public static double BlueHH = 141;
-    public static double BlueSL = 108;
+    public static double BlueHL = 100;
+    public static double BlueHH = 140;
+    public static double BlueSL = 150;
     public static double BlueSH = 255;
-    public static double BlueVL = 50;
+    public static double BlueVL = 0;
     public static double BlueVH = 255;
 
     public static int MIN_CONTOUR_LENGTH = 290;
@@ -59,7 +59,6 @@ public class SampleDetectionPipelineConfigure extends OpenCvPipeline {
     public static double MIN_DISTANCE = 65;
     public static double PIX2INCHES = 0.015;
 
-    // NOTE: Optimize garbage collector and reduce memory leak
     private final Mat hsvFrame = new Mat();
     private final Mat boundMask = new Mat();
     private final Mat hierarchy = new Mat();
@@ -94,7 +93,9 @@ public class SampleDetectionPipelineConfigure extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
         Mat mask = preprocessFrame(input);
+
         Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+
         Sample bestSample = findLargestContour(contours, input);
 
         for (MatOfPoint contour : contours) {
@@ -102,18 +103,22 @@ public class SampleDetectionPipelineConfigure extends OpenCvPipeline {
         }
 
         if (bestSample != null) {
-            Rect boundingRect = Imgproc.boundingRect(new MatOfPoint(bestSample.getCenterInInches()));
+            MatOfPoint centerPointMat = new MatOfPoint(new Point(bestSample.getCenterInInches().x, bestSample.getCenterInInches().y));
+            Rect boundingRect = Imgproc.boundingRect(centerPointMat);
             Imgproc.rectangle(input, boundingRect.tl(), boundingRect.br(), new Scalar(0, 255, 0), 3);
-            Imgproc.putText(input, "Angle: " + bestSample.getRotation(), new Point(boundingRect.x, boundingRect.y - 10),
+            Imgproc.putText(input, "Angle: " + bestSample.getRotation(),
+                    new Point(boundingRect.x, boundingRect.y - 10),
                     Imgproc.FONT_HERSHEY_SIMPLEX, 0.6, new Scalar(0, 255, 0), 2);
             Imgproc.circle(input, bestSample.getCenterInInches(), 25, new Scalar(0, 255, 0), 9);
         }
+
+        contours.clear();
 
         return showMask ? mask : input;
     }
 
     private Mat preprocessFrame(Mat frame) {
-        Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_BGR2HSV);
+        Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_RGB2HSV);
         switch (trackingColorChoice) {
             case 1:
                 Core.inRange(hsvFrame, new Scalar(YellowHL, YellowSL, YellowVL), new Scalar(YellowHH, YellowSH, YellowVH), boundMask);
@@ -122,11 +127,13 @@ public class SampleDetectionPipelineConfigure extends OpenCvPipeline {
                 Core.inRange(hsvFrame, new Scalar(BlueHL, BlueSL, BlueVL), new Scalar(BlueHH, BlueSH, BlueVH), boundMask);
                 break;
             default:
+                // Use two ranges for red and combine them.
                 Core.inRange(hsvFrame, new Scalar(Red1HL, Red1SL, Red1VL), new Scalar(Red1HH, Red1SH, Red1VH), mask1);
                 Core.inRange(hsvFrame, new Scalar(Red2HL, Red2SL, Red2VL), new Scalar(Red2HH, Red2SH, Red2VH), mask2);
                 Core.bitwise_or(mask1, mask2, boundMask);
                 break;
         }
+        // Apply morphology to clean up the mask.
         Imgproc.morphologyEx(boundMask, boundMask, Imgproc.MORPH_OPEN, kernel);
         Imgproc.morphologyEx(boundMask, boundMask, Imgproc.MORPH_CLOSE, kernel);
 
@@ -144,6 +151,7 @@ public class SampleDetectionPipelineConfigure extends OpenCvPipeline {
      * @return объект Sample с данными лучшего семпла или null, если семплы не найдены
      */
     private Sample findLargestContour(List<MatOfPoint> contours, Mat baseImage) {
+        // Clear temporary lists for each frame.
         foundSamplePositionsPix.clear();
         foundSamplePositionsInches.clear();
         foundSampleRotations.clear();
@@ -159,7 +167,6 @@ public class SampleDetectionPipelineConfigure extends OpenCvPipeline {
 
             MatOfPoint approxContour = new MatOfPoint();
             approxContour.fromList(approxPoints);
-
             int sumX = 0, sumY = 0;
             for (Point pt : approxContour.toList()) {
                 sumX += (int) pt.x;
@@ -167,7 +174,8 @@ public class SampleDetectionPipelineConfigure extends OpenCvPipeline {
             }
             Point centerPix = new Point((double) sumX / approxPoints.size(), (double) sumY / approxPoints.size());
 
-            boolean unique = foundSamplePositionsPix.stream().noneMatch(p -> distance(centerPix, p) < MIN_DISTANCE);
+            boolean unique = foundSamplePositionsPix.stream()
+                    .noneMatch(p -> distance(centerPix, p) < MIN_DISTANCE);
             if (!unique) continue;
             foundSamplePositionsPix.add(centerPix);
 
@@ -188,7 +196,10 @@ public class SampleDetectionPipelineConfigure extends OpenCvPipeline {
 
             double imageCenterX = baseImage.cols() / 2.0;
             double imageCenterY = baseImage.rows() / 2.0;
-            Point centerInInches = new Point((centerPix.x - imageCenterX) * PIX2INCHES, (centerPix.y - imageCenterY) * -PIX2INCHES);
+            Point centerInInches = new Point(
+                    (centerPix.x - imageCenterX) * PIX2INCHES,
+                    (centerPix.y - imageCenterY) * -PIX2INCHES
+            );
             foundSamplePositionsInches.add(centerInInches);
         }
 
