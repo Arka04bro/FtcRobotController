@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Autonomous(name="RoadRunner FrontBack V2")
+@Autonomous(name="BINOM MASHINA ARKAT")
 public class RoadRunnerFrontBackV2 extends LinearOpMode {
 
     // Distance thresholds
